@@ -1,6 +1,6 @@
 # Pinhole camera rotation homography
 # www.overfitting.net
-# https://www.overfitting.net/
+# https://www.overfitting.net/2026/07/rotaciones-para-cambiar-el-punto-de.html
 
 library(Rcpp)
 library(tiff)
@@ -219,7 +219,7 @@ theta_y <- deg2rad(10)  # 10º
 
 R_yaw <- matrix(c(
     cos(theta_y), 0, sin(theta_y),
-    0, 1,         0,
+    0,            1, 0,
    -sin(theta_y), 0, cos(theta_y)
 ), nrow = 3, byrow = TRUE)
 
