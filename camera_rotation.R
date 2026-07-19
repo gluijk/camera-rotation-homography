@@ -267,7 +267,7 @@ writeTIFF(img_rotada, "street12mm_rotate.tif")
 # 2. CORRECCIÓN DE TRAPEZOIDE A RELACIÓN DE ASPECTO REAL
 
 # NOTA: con esta función de rotación, si en la escena aparece un objeto que en el mundo real es un rectángulo
-# pero por efecto de las fugas (modelo de proyección pinhole) aparece como un trapezoide en la imagen origen
+# pero por efecto de las fugas (modelo de proyección pinhole) se muestra como un trapezoide en la imagen origen
 # y parametrizando una rotación logramos convertirlo en un rectángulo perfecto (lo que sería equivalente a
 # apuntar la cámara perpendicularmente al plano que contiene dicho rectángulo), tendremos
 # la relación de aspecto real del objeto, pero siempre y cuando la focal_length_mm fuera la exacta
