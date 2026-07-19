@@ -1,6 +1,6 @@
-# Homography camera rotation
+# Pinhole camera rotation homography
 # www.overfitting.net
-# https://www.overfitting.net/2026/07/mejorando-fotografias-ultraangulares.html
+# https://www.overfitting.net/
 
 library(Rcpp)
 library(tiff)
@@ -119,15 +119,15 @@ add_grid <- function(img, n_gridx = 12, linewidth = 4, colour = c(1, 1, 0), diag
 }
 
 
-#' Calcula la matriz de rotación para rectificar un trapezoide a rectángulo
-#' 
-#' @param H Alto de la imagen en píxeles
-#' @param W Ancho de la imagen en píxeles
-#' @param fl_FF_mm Distancia focal en equivalente Full Frame (mm)
-#' @param pts Matriz o data.frame de 4x2 con las esquinas (x, y) en píxeles.
-#'            Orden: 1=Top-Left, 2=Bottom-Left, 3=Bottom-Right, 4=Top-Right
-#'            Criterio: el píxel superior izquierdo de la imagen se indexa como (1,1)
-#'            creciendo la coordenada X hacia la derecha y la coordenada Y hacia abajo
+# Calculo de la matriz de rotación para rectificar un trapezoide a rectángulo
+# 
+# H: alto de la imagen en píxeles
+# W: ancho de la imagen en píxeles
+# fl_FF_mm: distancia focal en equivalente FF (mm)
+# pts: Matriz o data.frame 4x2 con las esquinas (X, Y) en píxeles
+#      Orden: 1=Top-Left, 2=Bottom-Left, 3=Bottom-Right, 4=Top-Right
+#      Criterio: el píxel superior izquierdo de la imagen se indexa como (1,1)
+#                creciendo la coordenada X hacia la derecha y la coordenada Y hacia abajo
 get_rectifying_rotation <- function(H, W, fl_FF_mm, pts) {
     
     # 1. Parámetros de cámara
@@ -195,6 +195,7 @@ get_rectifying_rotation <- function(H, W, fl_FF_mm, pts) {
 sourceCpp("camera_rotation.cpp")
 
 
+
 #######################################
 # 1. ROTACIÓN BÁSICA
 
@@ -258,7 +259,7 @@ R_combinada <- R_yaw %*% R_pitch %*% R_roll
 # Aplicar la transformación (Ej: tomada con lente de 28mm)
 focal_length_mm <- 12
 img_rotada <- rotate_camera(img, R_combinada, focal_length_mm, zoom = 0.5)
-writeTIFF(img_rotada, "street12mm_rotate2.tif")
+writeTIFF(img_rotada, "street12mm_rotate.tif")
 
 
 
@@ -292,6 +293,6 @@ esquinas <- matrix(c(
 # 1. Obtener matriz rotación rectificadora
 R_rect <- get_rectifying_rotation(H = nrow(img), W = ncol(img), fl_FF_mm = focal_length_mm, pts = esquinas)
 img_frontal <- rotate_camera(img, R_rect, fl_FF_mm = focal_length_mm, zoom = 0.27)
-writeTIFF(img_frontal, "building_frontal2.tif")
+writeTIFF(img_frontal, "building_frontal.tif")
 
 # The resulting rectangle has dimensions: 2442 x 798 -> 3.06 aspect ratio, CORRRRRRRECT!!!
