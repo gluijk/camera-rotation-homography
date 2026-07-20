@@ -280,7 +280,7 @@ img <- readTIFF("building.tif")  # Fuji X-S10 con 11mm (16,5mm eq.)
 # img=add_grid(img, n_gridx = 12, colour = c(1,1,0), linewidth = 4)
 # writeTIFF(img, "building_grid.tif")
 
-focal_length_mm <- 16.5
+focal_length_mm <- 16.5  # con la estimación 16.84 el resultado es ligeramente mejor
 
 
 # Ejemplo: Las 4 esquinas de una fachada
@@ -296,6 +296,6 @@ esquinas <- matrix(c(
 R_frontal <- get_rectifying_rotation(H = nrow(img), W = ncol(img), fl_FF_mm = focal_length_mm, pts = esquinas)
 img_frontal <- rotate_camera_rcpp(img, R_frontal, fl_FF_mm = focal_length_mm,
                                   zoom = 0.5, shift_x = 400, shift_y = 2000)
-writeTIFF(img_frontal, "building_frontal.tif")
+writeTIFF(img_frontal, "building_frontal_16.84mm.tif")
 
 # The resulting rectangle has 3.06 aspect ratio, CORRRRRRRECT!!!
