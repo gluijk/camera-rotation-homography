@@ -211,7 +211,21 @@ deg2rad <- function(deg) {
     return(deg * pi / 180)
 }
 
-# 1. Yaw/Paneo: rotación sobre el eje Y
+
+# 1. Pitch/Cabeceo: rotación sobre el eje X
+# Equivale a inclinar la cámara hacia arriba o hacia abajo
+# Afecta a las coordenadas Y y Z, manteniendo el centro horizontal fijo
+
+theta_x <- deg2rad(5)  # 5º
+
+R_pitch <- matrix(c(
+    1, 0,             0,
+    0, cos(theta_x), -sin(theta_x),
+    0, sin(theta_x),  cos(theta_x)
+), nrow = 3, byrow = TRUE)
+
+
+# 2. Yaw/Paneo: rotación sobre el eje Y
 # Equivale a girar la cámara hacia la izquierda o la derecha (como mirar a los lados en Google Street View)
 # Modifica las coordenadas X y Z de los rayos de luz, pero mantiene intacta la altura Y
 
@@ -221,19 +235,6 @@ R_yaw <- matrix(c(
     cos(theta_y), 0, sin(theta_y),
     0,            1, 0,
    -sin(theta_y), 0, cos(theta_y)
-), nrow = 3, byrow = TRUE)
-
-
-# 2. Pitch/Cabeceo: rotación sobre el eje X
-# Equivale a inclinar la cámara hacia arriba o hacia abajo
-# Afecta a las coordenadas Y y Z, manteniendo el centro horizontal fijo
-
-theta_x <- deg2rad(5)  # 5º
-
-R_pitch <- matrix(c(
-    1,  0,             0,
-    0,  cos(theta_x), -sin(theta_x),
-    0,  sin(theta_x),  cos(theta_x)
 ), nrow = 3, byrow = TRUE)
 
 
@@ -252,7 +253,7 @@ R_roll <- matrix(c(
 
 # Se pueden aplicar varios movimientos a la vez multiplicando las matrices
 # En álgebra matricial, el orden de las multiplicaciones importa (la rotación no es conmutativa)
-# Una convención común en cámaras es aplicar primero Roll, luego Pitch y finalmente Yaw
+# Una convención común en cámaras es aplicar: Roll -> Pitch -> Yaw
 # lo que equivale a multiplicar en orden inverso de derecha a izquierda:
 R_combinada <- R_yaw %*% R_pitch %*% R_roll
 
