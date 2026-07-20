@@ -5,7 +5,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-NumericVector rotate_camera(NumericVector img, NumericMatrix R, double fl_FF_mm, double zoom = 1.0, int shift_x = 0, int shift_y = 0) {
+NumericVector rotate_camera_rcpp(NumericVector img, NumericMatrix R, double fl_FF_mm, double zoom = 1.0, int shift_x = 0, int shift_y = 0) {
     // 1. Extraer dimensiones del array
     IntegerVector dims = img.attr("dim");
     if (dims.size() != 3) {

@@ -259,7 +259,8 @@ R_combinada <- R_yaw %*% R_pitch %*% R_roll
 
 # Aplicar la transformación (Ej: tomada con lente de 28mm)
 focal_length_mm <- 12
-img_rotada <- rotate_camera(img, R_combinada, focal_length_mm, zoom = 0.5)
+img_rotada <- rotate_camera_rcpp(img, R_combinada, focal_length_mm,
+                                 zoom = 0.6, shift_x = -1000)
 writeTIFF(img_rotada, "street12mm_rotate.tif")
 
 
@@ -292,9 +293,9 @@ esquinas <- matrix(c(
 ), ncol=2, byrow=TRUE)
 
 # 1. Obtener matriz rotación rectificadora
-R_rect <- get_rectifying_rotation(H = nrow(img), W = ncol(img), fl_FF_mm = focal_length_mm, pts = esquinas)
-img_frontal <- rotate_camera(img, R_rect, fl_FF_mm = focal_length_mm,
-                             zoom = 0.5, shift_x = 400, shift_y = 2000)
+R_frontal <- get_rectifying_rotation(H = nrow(img), W = ncol(img), fl_FF_mm = focal_length_mm, pts = esquinas)
+img_frontal <- rotate_camera_rcpp(img, R_frontal, fl_FF_mm = focal_length_mm,
+                                  zoom = 0.5, shift_x = 400, shift_y = 2000)
 writeTIFF(img_frontal, "building_frontal.tif")
 
-# The resulting rectangle has dimensions: 2442 x 798 -> 3.06 aspect ratio, CORRRRRRRECT!!!
+# The resulting rectangle has 3.06 aspect ratio, CORRRRRRRECT!!!
