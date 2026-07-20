@@ -292,7 +292,8 @@ esquinas <- matrix(c(
 
 # 1. Obtener matriz rotación rectificadora
 R_rect <- get_rectifying_rotation(H = nrow(img), W = ncol(img), fl_FF_mm = focal_length_mm, pts = esquinas)
-img_frontal <- rotate_camera(img, R_rect, fl_FF_mm = focal_length_mm, zoom = 0.27)
+img_frontal <- rotate_camera(img, R_rect, fl_FF_mm = focal_length_mm,
+                             zoom = 0.5, shift_x = 400, shift_y = 2000)
 writeTIFF(img_frontal, "building_frontal.tif")
 
 # The resulting rectangle has dimensions: 2442 x 798 -> 3.06 aspect ratio, CORRRRRRRECT!!!

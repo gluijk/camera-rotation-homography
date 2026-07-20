@@ -5,7 +5,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-NumericVector rotate_camera(NumericVector img, NumericMatrix R, double fl_FF_mm, double zoom = 1.0) {
+NumericVector rotate_camera(NumericVector img, NumericMatrix R, double fl_FF_mm, double zoom = 1.0, int shift_x = 0, int shift_y = 0) {
     // 1. Extraer dimensiones del array
     IntegerVector dims = img.attr("dim");
     if (dims.size() != 3) {
@@ -49,9 +49,10 @@ NumericVector rotate_camera(NumericVector img, NumericMatrix R, double fl_FF_mm,
     for (int x = 0; x < W; ++x) {
         for (int y = 0; y < H; ++y) {
             
-            // Paso A: De-proyección (DESTINO). Usamos f_pixel_dst que contiene el zoom
-            double ray_x = (x - cx) / f_pixel_dst;
-            double ray_y = (y - cy) / f_pixel_dst;
+            // Paso A: De-proyección (DESTINO). 
+            // Aplicamos el desplazamiento shift_x y shift_y al mapeo inverso
+            double ray_x = (x - shift_x - cx) / f_pixel_dst;
+            double ray_y = (y - shift_y - cy) / f_pixel_dst;
             double ray_z = 1.0;
 
             // Paso B: Rotar el rayo hacia el origen
