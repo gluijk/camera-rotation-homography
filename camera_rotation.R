@@ -257,7 +257,7 @@ R_roll <- matrix(c(
 # lo que equivale a multiplicar en orden inverso de derecha a izquierda:
 R_combinada <- R_yaw %*% R_pitch %*% R_roll
 
-# Aplicar la transformación (Ej: tomada con lente de 28mm)
+# Aplicar la transformación
 focal_length_mm <- 12
 img_rotada <- rotate_camera_rcpp(img, R_combinada, focal_length_mm,
                                  zoom = 0.6, shift_x = -1000)
