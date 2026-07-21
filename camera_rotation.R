@@ -190,22 +190,14 @@ get_rectifying_rotation <- function(H, W, fl_FF_mm, pts) {
 
 
 #######################################
-# 0. COMPILAR FUNCIÓN HOMOGRAFÍA EN C++
+# 1. COMPILAR FUNCIÓN HOMOGRAFÍA EN C++
 
 sourceCpp("camera_rotation.cpp")
 
 
 
 #######################################
-# 1. ROTACIÓN BÁSICA
-
-# Cargar una imagen de prueba (devuelve un array H x W x 3 con valores de 0 a 1)
-img <- readTIFF("street12mm.tif") 
-img=add_grid(img, n_gridx = 12, colour = c(1,1,0), linewidth = 4)
-writeTIFF(img, "street12mm_grid.tif")
-
-
-# Crear Matriz de Rotación
+# 2. CREAR MATRICES DE ROTACIÓN
 
 deg2rad <- function(deg) {
     return(deg * pi / 180)
@@ -257,6 +249,35 @@ R_roll <- matrix(c(
 # lo que equivale a multiplicar en orden inverso de derecha a izquierda:
 R_combinada <- R_yaw %*% R_pitch %*% R_roll
 
+
+
+#######################################
+# 3. ROTACIONES UNARIAS
+
+img <- readTIFF("alcala.tif") 
+
+# Aplicar la transformación
+focal_length_mm <- 8
+
+img_rotada <- rotate_camera_rcpp(img, R_pitch, focal_length_mm)
+writeTIFF(img_rotada, "alcala_Pitch.tif")
+
+img_rotada <- rotate_camera_rcpp(img, R_yaw, focal_length_mm)
+writeTIFF(img_rotada, "alcala_Yaw.tif")
+
+img_rotada <- rotate_camera_rcpp(img, R_roll, focal_length_mm)
+writeTIFF(img_rotada, "alcala_Roll.tif")
+
+
+
+#######################################
+# 4. ROTACIÓN BÁSICA
+
+img <- readTIFF("street12mm.tif") 
+img=add_grid(img, n_gridx = 12, colour = c(1,1,0), linewidth = 4)
+writeTIFF(img, "street12mm_grid.tif")
+
+
 # Aplicar la transformación
 focal_length_mm <- 12
 img_rotada <- rotate_camera_rcpp(img, R_combinada, focal_length_mm,
@@ -266,7 +287,7 @@ writeTIFF(img_rotada, "street12mm_rotate.tif")
 
 
 #######################################
-# 2. CORRECCIÓN DE TRAPEZOIDE A RELACIÓN DE ASPECTO REAL
+# 5. CORRECCIÓN DE TRAPEZOIDE A RELACIÓN DE ASPECTO REAL
 
 # NOTA: con esta función de rotación, si en la escena aparece un objeto que en el mundo real es un rectángulo
 # pero por efecto de las fugas (modelo de proyección pinhole) se muestra como un trapezoide en la imagen origen
@@ -275,7 +296,6 @@ writeTIFF(img_rotada, "street12mm_rotate.tif")
 # la relación de aspecto real del objeto, pero siempre y cuando la focal_length_mm fuera la exacta
 
 
-# 1. Cargar una imagen de prueba
 img <- readTIFF("building.tif")  # Fuji X-S10 con 11mm (16,5mm eq.)
 # img=add_grid(img, n_gridx = 12, colour = c(1,1,0), linewidth = 4)
 # writeTIFF(img, "building_grid.tif")
@@ -292,7 +312,7 @@ esquinas <- matrix(c(
     5254, 1873    # p4: TR
 ), ncol=2, byrow=TRUE)
 
-# 1. Obtener matriz rotación rectificadora
+# Obtener matriz rotación rectificadora
 R_frontal <- get_rectifying_rotation(H = nrow(img), W = ncol(img), fl_FF_mm = focal_length_mm, pts = esquinas)
 img_frontal <- rotate_camera_rcpp(img, R_frontal, fl_FF_mm = focal_length_mm,
                                   zoom = 0.5, shift_x = 400, shift_y = 2000)
